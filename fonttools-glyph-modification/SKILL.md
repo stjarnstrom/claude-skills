@@ -91,9 +91,21 @@ user_norm = piecewiseLinearMap(gvar_norm, inv_avar)
 | 16, 17 | Typographic Family/Sub | **Must overwrite** — Figma reads these |
 | 25 | Variations PS Prefix | **Must overwrite** — variable font PS name |
 
+**RIBBI convention** (static fonts): nameID 2 can ONLY be Regular/Italic/Bold/Bold Italic. For other weights (Thin, Medium, etc.), bake the weight into nameID 1 (e.g., `"MyFont Medium"`) and set nameID 2 to `"Regular"`. nameID 16/17 hold the real family/style grouping.
+
+**Variable font default style**: nameID 2/17 must match the font's actual fvar default axis value. If default wght=300 (Light), set nameID 2="Light", NOT "Regular". Look up the matching named instance from fvar.
+
 **Bold metadata**: Set `OS/2.fsSelection` bit 5 (BOLD), clear bit 6 (REGULAR). Set `head.macStyle` bit 0.
 
-**Scrub leftovers**: After setting your names, scan all name entries and remove any still referencing the original font name (except nameID 0 copyright and 10 description).
+**OS/2.achVendID**: Update the 4-char vendor tag to match your brand.
+
+**Scrub leftovers**: After setting your names, scan ALL name entries and remove any still referencing the original font name (except nameID 0 copyright and 10 description). Pay special attention to high-numbered entries (257+) used by fvar named instances — these often contain the original font's PostScript names.
+
+## Figma Compatibility
+
+- **MVAR table**: The Metrics Variations table can crash Figma's variable axes panel. If the source font has one and you don't need it, remove it: `del font['MVAR']`
+- **Font caching**: Figma aggressively caches fonts. To see changes: delete old fonts → restart Figma → close and reopen the project → re-upload
+- **nameID 16/17**: These are what Figma actually reads for font family display, not nameID 1/2. Always set both.
 
 ## Common Mistakes
 
@@ -106,3 +118,6 @@ user_norm = piecewiseLinearMap(gvar_norm, inv_avar)
 | Linear norm→user conversion | Invert avar table first if present |
 | Set nameID 1 only | Also set 16, 17, 25 — apps like Figma read these |
 | Empty metadata fields leave originals | Use `removeNames()` to clear, not just skip |
+| nameID 2="Medium" or "Thin" | RIBBI: bake weight into nameID 1, set nameID 2="Regular" |
+| Variable font nameID 2="Regular" when default is Light | Look up actual fvar default instance name |
+| fvar instance names survive renaming | Scrub high nameIDs (257+) that reference original font |
