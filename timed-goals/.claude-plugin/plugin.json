@@ -1,0 +1,11 @@
+{
+  "name": "timed-goals",
+  "displayName": "Timed Goals",
+  "version": "0.1.0",
+  "description": "Set a generic goal plus a time budget; Claude works autonomously toward it, reflecting and improving each turn until the timer runs out.",
+  "author": {
+    "name": "Linus Rönnbäck",
+    "email": "linus.ronnback-larsson@tromb.com"
+  },
+  "keywords": ["productivity", "automation", "autonomous", "goals", "hooks"]
+}
